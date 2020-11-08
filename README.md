@@ -8,6 +8,10 @@
 ## Быстрая установка
 
 ```
+git clone https://github.com/skiter847/PencilImage.git
+
+cd PencilImage
+
 sudo docker-compose build
 sudo docker-compose up -d
 ```
