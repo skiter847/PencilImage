@@ -1,0 +1,41 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=secret
+
+    ports:
+      - "5432:5432"
+  redis:
+    image: "redis:alpine"
+
+    command: redis-server
+
+    ports:
+      - "6379:6379"
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      - DBNAME=postgres
+      - DBUSER=postgres
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+
+  celery:
+    build: .
+    command: celery -A PencilImage worker -l info
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
